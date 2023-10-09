@@ -319,12 +319,12 @@ int WriteStandardHeader(FILE *csv, const Config *cfg, const size_t num_mppt)
         for (size_t n = 1; n <= num_mppt; ++n) exthdr += "|Watt";
         for (size_t n = 1; n <= num_mppt; ++n) exthdr += "|Amp";
         for (size_t n = 1; n <= num_mppt; ++n) exthdr += "|Volt";
-        exthdr += "|Watt|Watt|Watt|Amp|Amp|Amp|Volt|Volt|Volt|Watt|Watt|%|kWh|kWh|Hz|Hours|Hours|%|Status|Status|degC\n";
+        exthdr += "|Watt|Watt|Watt|Amp|Amp|Amp|Volt|Volt|Volt|Watt|Watt|%|kWh|kWh|Hz|Hours|Hours|kWh|kWh|%|Status|Status|degC\n";
 
         for (size_t n = 1; n <= num_mppt; ++n) stdhdr += "|Pdc" + std::to_string(n);
         for (size_t n = 1; n <= num_mppt; ++n) stdhdr += "|Idc" + std::to_string(n);
         for (size_t n = 1; n <= num_mppt; ++n) stdhdr += "|Udc" + std::to_string(n);
-        stdhdr += "|Pac1|Pac2|Pac3|Iac1|Iac2|Iac3|Uac1|Uac2|Uac3|PdcTot|PacTot|Efficiency|EToday|ETotal|Frequency|OperatingTime|FeedInTime|BT_Signal|Condition|GridRelay|Temperature\n";
+        stdhdr += "|Pac1|Pac2|Pac3|Iac1|Iac2|Iac3|Uac1|Uac2|Uac3|PdcTot|PacTot|Efficiency|EToday|ETotal|Frequency|OperatingTime|FeedInTime|MeteringGridMsTotWOut|MeteringGridMsTotWIn|BT_Signal|Condition|GridRelay|Temperature\n";
     }
 
     if (cfg->CSV_ExtendedHeader)
@@ -536,6 +536,8 @@ int ExportSpotDataToCSV(const Config *cfg, InverterData* const inverters[])
                 fprintf(csv, strout, cfg->delimiter, FormatFloat(FormattedFloat, (float)inverters[inv]->GridFreq / 100, 0, cfg->precision, cfg->decimalpoint));
                 fprintf(csv, strout, cfg->delimiter, FormatDouble(FormattedFloat, (double)inverters[inv]->OperationTime / 3600, 0, cfg->precision, cfg->decimalpoint));
                 fprintf(csv, strout, cfg->delimiter, FormatDouble(FormattedFloat, (double)inverters[inv]->FeedInTime / 3600, 0, cfg->precision, cfg->decimalpoint));
+                fprintf(csv, strout, cfg->delimiter, FormatFloat(FormattedFloat, ((float)inverters[inv]->MeteringGridMsTotWOut), 0, cfg->precision, cfg->decimalpoint));
+                fprintf(csv, strout, cfg->delimiter, FormatFloat(FormattedFloat, ((float)inverters[inv]->MeteringGridMsTotWIn), 0, cfg->precision, cfg->decimalpoint));
                 if (inverters[inv]->BT_Signal == 0)
                     fprintf(csv, strout, cfg->delimiter, NA);
                 else
